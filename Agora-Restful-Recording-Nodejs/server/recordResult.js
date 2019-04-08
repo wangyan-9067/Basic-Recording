@@ -17,7 +17,7 @@ function moveFile(sid, filename) {
                 reject(err);
             } else {
                 let src = files[0];
-                let dest = path.resolve('/public', 'e-telebet', `${filename}.aac`);
+                let dest = path.resolve('/root/public', 'e-telebet', `${filename}.aac`);
 
                 console.log(`find src file ${src}, files length ${files.length}`);
                 console.log(`copy to dest ${dest}`);
