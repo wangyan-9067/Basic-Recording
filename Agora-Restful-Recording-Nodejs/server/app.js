@@ -3,6 +3,7 @@ const app = express()
 const port = 3000
 const RecordManager = require('./recordManager')
 const bodyParser = require('body-parser')
+const recordResult = require('./recordResult')
 
 app.use(bodyParser.json());
 
@@ -30,15 +31,21 @@ app.post('/recorder/v1/start', (req, res, next) => {
 
 app.post('/recorder/v1/stop', (req, res, next) => {
     let { body } = req;
-    let { sid } = body;
-    if (!sid) {
-        throw new Error("sid is mandatory");
-    }
+    let { sid, filename } = body;
+    if (!sid || !filename) {
+        res.status(500).json({
+            success: false,
+            err: 'sid and filename are required.'
+        });
+    } else {
+        RecordManager.stop(sid);
+        recordResult.moveFile(sid, filename).then(function() {
+            res.status(200).json({
+                success: true
+            });
+        });
 
-    RecordManager.stop(sid);
-    res.status(200).json({
-        success: true
-    });
+    }
 })
 
 app.use( (err, req, res, next) => {
