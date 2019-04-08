@@ -13,11 +13,21 @@ function moveFile(sid, filename) {
     return new Promise(function(resolve, reject) {
         const storagePath = path.resolve(__dirname, `./output/${sid}`);
         glob(`${storagePath}/*.aac`, function(err, files) {
-            fs.copy(files[0], path.resolve('/public', 'e-telebet', `${filename}.aac`))
-                .then(function() {
-                    return fs.remove(storagePath).then(resolve);
-                })
-                .catch(reject);
+            if (err) {
+                reject(err);
+            } else {
+                let src = files[0];
+                let dest = path.resolve('/public', 'e-telebet', `${filename}.aac`);
+
+                console.log(`find src file ${src}, files length ${files.length}`);
+                console.log(`copy to dest ${dest}`);
+
+                fs.copyFile(src, dest)
+                    .then(function() {
+                        return fs.remove(storagePath).then(resolve);
+                    })
+                    .catch(reject);
+                }
         });
     });
 }
